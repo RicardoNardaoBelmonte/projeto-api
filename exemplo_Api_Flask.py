@@ -14,7 +14,6 @@ from functools import wraps
 #delete
 #6 Quais são  os URL para cada um
 #ex: GET http://localhost:5000/postagens
-
 #Token obrigatorio 
 def token_obrigatorio(f):
     @wraps(f)
@@ -88,8 +87,8 @@ def nova_postagem(autor):
   nova_postagem =  request.get_json()
   postagem = Postagem(id_postagem = nova_postagem['id_postagem'], titulo = nova_postagem['titulo'], id_autor = nova_postagem['id_autor'])
   db.session.add(postagem)
-  db.session.commit
-  return jsonify({'mensagem': 'Usuario criado com sucesso!'}, 200)
+  db.session.commit()
+  return jsonify({'mensagem': 'Postagem criado com sucesso!'}, 200)
    
 #alterar postagem existente 
 @app.route('/postagem/<int:id_postagem>', methods= ['PUT'])
@@ -111,7 +110,7 @@ def alterar_postagem(autor,id_postagem):
        postagem.id_autor = postagem_alterar['id_autor']
    except:
        pass
-   db.session.commit
+   db.session.commit()
    return jsonify({'mensagem': 'Usuario cadastrado com sucesso!'}, 200)
    
 #excluir postagem
@@ -122,7 +121,7 @@ def excluir_postagem(autor,id_postagem):
     if not postagem_existente:
         return jsonify({'mensagem': 'Autor não encontrado!'})
     db.session.delete(postagem_existente)
-    db.session.commit
+    db.session.commit()
     return jsonify({'mensagem': 'Postagem excluida com sucesso!'})
     
 #definindo rota padrao
@@ -160,7 +159,7 @@ def adicionar_autor(autor):
    novo_autor = request.get_json()
    autor = Autor(nome= novo_autor['nome'], senha= novo_autor['senha'], email=novo_autor['email'])
    db.session.add(autor)
-   db.session.commit
+   db.session.commit()
    return jsonify({'mensagem': 'Usuario criado com sucesso!'}, 200)
 
 #Para Alterar autores
@@ -184,7 +183,7 @@ def altera_autor(autor,id_autor):
     except:
         pass
 
-    db.session.commit
+    db.session.commit()
     return jsonify({'mensagem': 'Usuario alterado com sucesso!'}, 200)
 
 #Para deletar autores
