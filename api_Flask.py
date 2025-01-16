@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request, make_response
-from framkework_sql import Autor, Postagem, app, db 
+from connect_Bdd import Autor, Postagem, app, db 
 import jwt
 from datetime import datetime,timedelta
 from functools import wraps
@@ -11,7 +11,7 @@ from functools import wraps
 #get
 #put
 #post
-#delete
+#delete 
 #6 Quais são  os URL para cada um
 #ex: GET http://localhost:5000/postagens
 #Token obrigatorio 
@@ -21,7 +21,7 @@ def token_obrigatorio(f):
         token = None
         if 'x-access-token' in request.headers:
             token = request.headers['x-access-token']
-            if not token:
+            if not token: 
                 return jsonify({'mensagem': 'Token não esta incluso'}, 401)
             try:
                 resultado = jwt.decode(token, app.config['SECRET_KEY'], algorithms=["HS256"])
@@ -37,19 +37,20 @@ def token_obrigatorio(f):
 
 
 #definindo endpoint para login !!!
-@app.route('/login')
-def login():
-   auth =  request.authorization
-   if not auth or not auth.username or not auth.password:
-       return make_response('Login invalido', 401, {'WWW-Authenticate': 'Basic realm="Login obrigatório"'})
-   usuario = Autor.query.filter_by(nome=auth.username).first()
-   if not usuario:
+def configure_routes(app):
+    @app.route('/login')
+    def login():
+        auth =  request.authorization
+        if not auth or not auth.username or not auth.password:
+            return make_response('Login invalido', 401, {'WWW-Authenticate': 'Basic realm="Login obrigatório"'})
+        usuario = Autor.query.filter_by(nome=auth.username).first()
+        if not usuario:
+                return make_response('Login invalido', 401, {'WWW-Authenticate': 'Basic realm="Login obrigatório"'})
+        if auth.password == usuario.senha:
+            token = jwt.encode({'id_autor': usuario.id_autor, 'exp': (datetime.utcnow()+ timedelta(minutes=30)).timestamp()},
+                                app.config['SECRET_KEY'])
+            return jsonify({'token': token})
         return make_response('Login invalido', 401, {'WWW-Authenticate': 'Basic realm="Login obrigatório"'})
-   if auth.password == usuario.senha:
-      token = jwt.encode({'id_autor': usuario.id_autor, 'exp': (datetime.utcnow()+ timedelta(minutes=30)).timestamp()},
-                          app.config['SECRET_KEY'])
-      return jsonify({'token': token})
-   return make_response('Login invalido', 401, {'WWW-Authenticate': 'Basic realm="Login obrigatório"'})
 
     
 
