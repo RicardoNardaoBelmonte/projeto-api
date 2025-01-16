@@ -64,8 +64,9 @@ def configure_routes(app):
             postagem_atual['id_postagem'] = postagem.id_postagem
             postagem_atual['id_autor'] = postagem.id_autor
             postagem_atual['titulo'] = postagem.titulo
-            lista_de_postagens.append(postagem_atual)
-            return jsonify({'autores': lista_de_postagens})
+            lista_de_postagens.append(postagem_atual)      
+        return jsonify({'autores': lista_de_postagens})
+        
     
     #criando get com ID
     @app.route('/postagem/<int:id_postagem>', methods=['GET'])
@@ -135,8 +136,8 @@ def configure_routes(app):
             autor_atual['id_autor'] = autor.id_autor
             autor_atual['nome'] = autor.nome
             autor_atual['email'] = autor.email
-            lista_de_autores.append(autor_atual)
-            return jsonify({'autores': lista_de_autores})
+            lista_de_autores.append(autor_atual)           
+        return jsonify({'autores': lista_de_autores})
 
     #Procurar autores por id
     @app.route('/autores/<int:id_autor>', methods=['GET'])
